@@ -5,23 +5,21 @@ import random
 
 class Ball:
     def __init__(self, number, color, center, radius, velocity, window_size):
-        self.window_size = window_size
-        self.number = number
-        self.color = color
+        self.window_size    = window_size
+        self.number         = number
+        self.color          = color
         self.original_color = color
-        radius_Coordinate = Coordinate((radius, radius))  # calculate absolute version only once, at beginning (assuming window cannot be resized)
-        self.radius_absolute = radius_Coordinate.absolute(window_size)
-        velocity_Coordinate = Coordinate(velocity)          # calculate absolute version only once, at beginning (assuming window cannot be resized)
-        self.velocity_absolute = velocity_Coordinate.absolute(window_size)
-        center_Coordinate = Coordinate(center)            # calculate absolute version only once, at beginning (assuming window cannot be resized)
-        self.center_absolute = center_Coordinate.absolute(window_size)
+        radius_Coordinate       = Coordinate((radius, radius))  # calculate absolute version only once, at beginning (assuming window cannot be resized)
+        self.radius_absolute    = radius_Coordinate.absolute(window_size)
+        velocity_Coordinate     = Coordinate(velocity)          # calculate absolute version only once, at beginning (assuming window cannot be resized)
+        self.velocity_absolute  = velocity_Coordinate.absolute(window_size)
+        center_Coordinate       = Coordinate(center)            # calculate absolute version only once, at beginning (assuming window cannot be resized)
+        self.center_absolute    = center_Coordinate.absolute(window_size)
 
     def move(self):
-        x_abs, y_abs = self.center_absolute
-        dx_abs, dy_abs = self.velocity_absolute
-        new_x_abs = x_abs + dx_abs
-        new_y_abs = y_abs + dy_abs
-        new_xy_abs = new_x_abs, new_y_abs
+        x_abs, y_abs    = self.center_absolute
+        dx_abs, dy_abs  = self.velocity_absolute
+        new_xy_abs      = (x_abs+dx_abs, y_abs+dy_abs)
         self.center_absolute = new_xy_abs
         self._change_velocity_direction_if_necessary(new_xy_abs)
         return (self.center_absolute, self.radius_absolute)
@@ -37,12 +35,12 @@ class Ball:
 
 class BallCreator:
     def __init__(self, options):
-        self.number_balls = options.total_number_balls
-        self.center_xy_range = options.center_xy_range
-        self.radius_range = options.radius_range
-        self.velocity_range = options.velocity_range
-        self.window_size = options.window_size
-        self.balls = self._setup_balls()
+        self.number_balls       = options.total_number_balls
+        self.center_xy_range    = options.center_xy_range
+        self.radius_range       = options.radius_range
+        self.velocity_range     = options.velocity_range
+        self.window_size        = options.window_size
+        self.balls              = self._setup_balls()
 
     def _setup_balls(self):
         balls = []
@@ -73,15 +71,15 @@ class BallCreator:
         else:               return False
 
     @staticmethod
-    def RND(range_or_options):
-        if type(range_or_options) is tuple:
-            a, b = range_or_options
+    def RND(range_or_choices):
+        if type(range_or_choices) is tuple:
+            a, b = range_or_choices
             if type(a) == type(b) == int:
                 return random.randint(a, b)
             elif type(a) == type(b) == float:
                 return random.uniform(a, b)
-        elif type(range_or_options) is list:
-            return random.choice(range_or_options)
+        elif type(range_or_choices) is list:
+            return random.choice(range_or_choices)
 
 
 class Coordinate:
