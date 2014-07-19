@@ -18,8 +18,6 @@ class Main:
             self.window.surface.fill(BLACK)
             for ball in self.balls:
                 center_pos_px, radius_px =  ball.move()
-                print('center_pos_px', center_pos_px)
-                print('radius_px', radius_px)
                 pygame.draw.circle(self.window.surface, ball.color, center_pos_px, radius_px[0])
                 basic_font = pygame.font.SysFont(None, 24)
                 text = basic_font.render(str(ball.number), True, BLACK)
@@ -46,7 +44,7 @@ class Window:
 
 class Options:
     def __init__(self):
-        self.total_number_balls = 10  # integer
+        self.total_number_balls = 5  # integer
         self.center_xy_range = (0.010, 0.99)  # proportion of window
         self.radius_range = (0.025, 0.075)  # proportion of window
         self.velocity_range = (0.005, 0.010)  # proportion of window
