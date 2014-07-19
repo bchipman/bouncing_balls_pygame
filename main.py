@@ -22,9 +22,8 @@ class Main:
                 basic_font = pygame.font.SysFont(None, 24)
                 text = basic_font.render(str(ball.number), True, BLACK)
                 self.window.surface.blit(text, center_pos_px)
-                
             pygame.display.update()
-            pygame.time.delay(20)
+            pygame.time.delay(50)
 
     def check_for_pygame_quit_event(self):
         for event in pygame.event.get():
