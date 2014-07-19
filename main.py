@@ -17,15 +17,13 @@ class Main:
             self.check_for_pygame_quit_event()
             self.window.surface.fill(BLACK)
             for ball in self.balls:
-                ball.move()
-                center_in_pixels = ball.center_absolute
-                radius_in_pixels = ball.radius_absolute[0] # is a tuple; allows possibility for ovals later.
-                print('center_in_pixels', center_in_pixels)
-                print('radius_in_pixels', radius_in_pixels)
-                pygame.draw.circle(self.window.surface, ball.color, center_in_pixels, radius_in_pixels)
+                center_pos_px, radius_px =  ball.move()
+                print('center_pos_px', center_pos_px)
+                print('radius_px', radius_px)
+                pygame.draw.circle(self.window.surface, ball.color, center_pos_px, radius_px[0])
                 basic_font = pygame.font.SysFont(None, 24)
                 text = basic_font.render(str(ball.number), True, BLACK)
-                self.window.surface.blit(text, center_in_pixels)
+                self.window.surface.blit(text, center_pos_px)
                 
             pygame.display.update()
             pygame.time.delay(20)

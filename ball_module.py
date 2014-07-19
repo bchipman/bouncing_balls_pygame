@@ -23,6 +23,7 @@ class Ball:
         new_xy_abs = new_x_abs, new_y_abs
         self.center_absolute = new_xy_abs
         self._change_velocity_direction_if_necessary(new_xy_abs)
+        return (self.center_absolute, self.radius_absolute)
 
     def _change_velocity_direction_if_necessary(self, new_position_abs):
         ball_edges = calculate.edge_values(new_position_abs, self.radius_absolute)
