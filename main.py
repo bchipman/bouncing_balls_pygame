@@ -8,13 +8,15 @@ import sys
 class Main:
     def __init__(self):
         self.options = options
-        self.setup_screen()
+        self.screen  = self.setup_screen()
         self.balls   = ball_module.BallCreator(self.options).balls
         self.START_GAME_LOOP()
 
     def setup_screen(self):
-        self.screen = pygame.display.set_mode(self.options.window_size)
-        pygame.display.set_caption('Bouncing Balls!')
+        display = pygame.display
+        screen  = display.set_mode(self.options.window_size)
+        display.set_caption('Bouncing Balls!')
+        return screen
 
     def START_GAME_LOOP(self):
         pygame.init()
