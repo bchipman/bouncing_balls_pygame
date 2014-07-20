@@ -8,22 +8,26 @@ import sys
 class Main:
     def __init__(self):
         self.options = options
-        self.window  = Window(self.options.window_size)
+        self.setup_screen()
         self.balls   = ball_module.BallCreator(self.options).balls
         self.START_GAME_LOOP()
+
+    def setup_screen(self):
+        self.screen = pygame.display.set_mode(self.options.window_size)
+        pygame.display.set_caption('Bouncing Balls!')
 
     def START_GAME_LOOP(self):
         pygame.init()
         while True:
             self.check_for_pygame_quit_event()
             
-            self.window.screen.fill(BLACK)
+            self.screen.fill(BLACK)
             for ball in self.balls:
                 center_pos_px, radius_px = ball.move()
-                pygame.draw.circle(self.window.screen, ball.color, center_pos_px, radius_px[0])
+                pygame.draw.circle(self.screen, ball.color, center_pos_px, radius_px[0])
                 basic_font = pygame.font.SysFont(None, 24)
                 text = basic_font.render(str(ball.number), True, BLACK)
-                self.window.screen.blit(text, center_pos_px)
+                self.screen.blit(text, center_pos_px)
             pygame.display.update()
             pygame.time.delay(50)
 
@@ -34,21 +38,13 @@ class Main:
                 sys.exit()
 
 
-class Window:
-    def __init__(self, size):
-        self.size   = size
-        self.width  = size[0]
-        self.height = size[1]
-        self.screen = pygame.display.set_mode(size)
-        pygame.display.set_caption('Bouncing Balls!')
-
-
 options = mk_namedtuple('Options', dict(
     total_number_balls  = 5,                # integer
     center_xy_range     = (0.010,   0.99),  # proportion of window
     radius_range        = (0.025,   0.075), # proportion of window
     velocity_range      = (0.005,   0.010), # proportion of window
     window_size         = (600,     600)))  # pixels
+
 
 if __name__ == '__main__':
     Main()
