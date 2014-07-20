@@ -10,7 +10,7 @@ class Ball:
         self.color          = color
         self.original_color = color
         radius_Coordinate       = Coordinate((radius, radius))  # calculate absolute version only once, at beginning (assuming window cannot be resized)
-        self.radius_absolute    = radius_Coordinate.absolute(window_size)
+        self.radius_absolute    = radius_Coordinate.absolute(window_size)[0] # Not a tuple since currently limiting balls to circles.
         velocity_Coordinate     = Coordinate(velocity)          # calculate absolute version only once, at beginning (assuming window cannot be resized)
         self.velocity_absolute  = velocity_Coordinate.absolute(window_size)
         center_Coordinate       = Coordinate(center)            # calculate absolute version only once, at beginning (assuming window cannot be resized)

@@ -38,7 +38,7 @@ class Main:
         self.screen.fill(BLACK)
         for ball in self.balls:
             center_pos_px, radius_px = ball.move()
-            pygame.draw.circle(self.screen, ball.color, center_pos_px, radius_px[0])
+            pygame.draw.circle(self.screen, ball.color, center_pos_px, radius_px)
             text = self.font.render(str(ball.number), True, BLACK)
             self.screen.blit(text, center_pos_px)
         pygame.display.update()
