@@ -7,10 +7,15 @@ import sys
 
 class Main:
     def __init__(self):
+        pygame.init()
         self.options = options
         self.screen  = self.setup_screen()
+        self.font    = self.setup_font()
         self.balls   = ball_module.BallCreator(self.options).balls
         self.START_GAME_LOOP()
+
+    def setup_font(self):
+        return pygame.font.SysFont(None, 24)
 
     def setup_screen(self):
         display = pygame.display
@@ -19,25 +24,25 @@ class Main:
         return screen
 
     def START_GAME_LOOP(self):
-        pygame.init()
         while True:
             self.check_for_pygame_quit_event()
-            
-            self.screen.fill(BLACK)
-            for ball in self.balls:
-                center_pos_px, radius_px = ball.move()
-                pygame.draw.circle(self.screen, ball.color, center_pos_px, radius_px[0])
-                basic_font = pygame.font.SysFont(None, 24)
-                text = basic_font.render(str(ball.number), True, BLACK)
-                self.screen.blit(text, center_pos_px)
-            pygame.display.update()
-            pygame.time.delay(50)
+            self.redraw_screen()
 
     def check_for_pygame_quit_event(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+    def redraw_screen(self):
+        self.screen.fill(BLACK)
+        for ball in self.balls:
+            center_pos_px, radius_px = ball.move()
+            pygame.draw.circle(self.screen, ball.color, center_pos_px, radius_px[0])
+            text = self.font.render(str(ball.number), True, BLACK)
+            self.screen.blit(text, center_pos_px)
+        pygame.display.update()
+        pygame.time.delay(50)
 
 
 options = mk_namedtuple('Options', dict(
