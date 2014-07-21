@@ -1,9 +1,9 @@
+import generic_functions as gfs
+gfs.change_sys_path()
 import ball_module
 from colors import *
-from generic_functions import mk_namedtuple
-import pygame
 import sys
-
+import pygame
 
 class Main:
     def __init__(self):
@@ -45,7 +45,7 @@ class Main:
         pygame.time.delay(50)
 
 
-options = mk_namedtuple('Options', dict(
+options = gfs.mk_namedtuple('Options', dict(
     total_number_balls  = 5,                # integer
     center_xy_range     = (0.010,   0.99),  # proportion of window
     radius_range        = (0.025,   0.075), # proportion of window
