@@ -9,12 +9,9 @@ class Ball:
         self.number         = number
         self.color          = color
         self.original_color = color
-        radius_Coordinate       = Coordinate((radius, radius))  # calculate absolute version only once, at beginning (assuming window cannot be resized)
-        self.radius_absolute    = radius_Coordinate.absolute(window_size)[0] # Not a tuple since currently limiting balls to circles.
-        velocity_Coordinate     = Coordinate(velocity)          # calculate absolute version only once, at beginning (assuming window cannot be resized)
-        self.velocity_absolute  = velocity_Coordinate.absolute(window_size)
-        center_Coordinate       = Coordinate(center)            # calculate absolute version only once, at beginning (assuming window cannot be resized)
-        self.center_absolute    = center_Coordinate.absolute(window_size)
+        self.radius_absolute    = Coordinate((radius,radius)).absolute(window_size)[0]
+        self.velocity_absolute  = Coordinate(velocity).absolute(window_size)
+        self.center_absolute    = Coordinate(center).absolute(window_size)
 
     def move(self):
         x_abs, y_abs    = self.center_absolute
