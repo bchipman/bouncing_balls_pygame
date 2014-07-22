@@ -25,3 +25,9 @@ def velocity_after_wall_collision(velocity, walls_hit):
     if 'E' in walls_hit:    vx = vx * -1
     if 'W' in walls_hit:    vx = vx * -1
     return (vx, vy)
+
+def new_position(position, velocity):
+    x, y = position
+    dx, dy = velocity
+    return (x+dx, y+dy)
+

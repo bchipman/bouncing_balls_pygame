@@ -17,23 +17,24 @@ class Ball:
         self.color = self.start_color
         self.ball_edges = calculate.edge_values(self.center_absolute, self.radius_absolute)
         self.walls_hit = calculate.walls_hit(self.ball_edges, self.window_size)        
+        self.counter = 0
 
     def move(self):
-        x_abs, y_abs    = self.center_absolute
-        dx_abs, dy_abs  = self.velocity_absolute
-        new_xy_abs      = (x_abs+dx_abs, y_abs+dy_abs)
-        self.center_absolute = new_xy_abs
-        self._change_velocity_direction_if_necessary(new_xy_abs)
+        self.center_absolute = calculate.new_position(self.center_absolute, self.velocity_absolute)
+        self.ball_edges = calculate.edge_values(self.center_absolute, self.radius_absolute)
+        self.walls_hit = calculate.walls_hit(self.ball_edges, self.window_size)
+        self.velocity_absolute = calculate.velocity_after_wall_collision(self.velocity_absolute, self.walls_hit)
+        self._change_color_if_collision()
         return (self.center_absolute, self.radius_absolute)
 
-    def _change_velocity_direction_if_necessary(self, new_position_abs):
-        ball_edges = calculate.edge_values(new_position_abs, self.radius_absolute)
-        walls_hit = calculate.walls_hit(ball_edges, self.window_size)
-        if walls_hit != '': self.color = colors.YELLOW
-        else:               self.color = self.start_color
-        new_velocity_abs = calculate.velocity_after_wall_collision(self.velocity_absolute, walls_hit)
-        self.velocity_absolute = new_velocity_abs
-
+    def _change_color_if_collision(self):
+        if self.walls_hit == '':  # if no walls hit THIS frame..
+            self.counter = self.counter - 1 if self.counter > 0 else 0  # ..decrement if necessary
+            if self.counter == 0:  # if counter is at 0..
+                self.color = self.start_color  # ..set ball color to starting color
+        else: # if walls were hit this frame..
+            self.color = colors.YELLOW  # ..set ball color to yellow
+            self.counter = 5  # ..and reset counter
 
 class BallCreator:
     def __init__(self, options):
@@ -100,5 +101,4 @@ class Coordinate:
 
     def absolute(self, absolute_size):
         W, H = absolute_size
-        return (int(self._relative_x * W), int(self._relative_y * H))
         return (int(self._relative_x * W), int(self._relative_y * H))
