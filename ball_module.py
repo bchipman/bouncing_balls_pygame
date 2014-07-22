@@ -7,11 +7,16 @@ class Ball:
     def __init__(self, number, color, center, radius, velocity, window_size):
         self.window_size    = window_size
         self.number         = number
-        self.color          = color
-        self.original_color = color
+        self.start_color    = color
         self.radius_absolute    = Coordinate((radius,radius)).absolute(window_size)[0]
         self.velocity_absolute  = Coordinate(velocity).absolute(window_size)
         self.center_absolute    = Coordinate(center).absolute(window_size)
+        self.__init__changing_vars()
+
+    def __init__changing_vars(self):
+        self.color = self.start_color
+        self.ball_edges = calculate.edge_values(self.center_absolute, self.radius_absolute)
+        self.walls_hit = calculate.walls_hit(self.ball_edges, self.window_size)        
 
     def move(self):
         x_abs, y_abs    = self.center_absolute
@@ -25,7 +30,7 @@ class Ball:
         ball_edges = calculate.edge_values(new_position_abs, self.radius_absolute)
         walls_hit = calculate.walls_hit(ball_edges, self.window_size)
         if walls_hit != '': self.color = colors.YELLOW
-        else:               self.color = self.original_color
+        else:               self.color = self.start_color
         new_velocity_abs = calculate.velocity_after_wall_collision(self.velocity_absolute, walls_hit)
         self.velocity_absolute = new_velocity_abs
 
