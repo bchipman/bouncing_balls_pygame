@@ -14,7 +14,7 @@ class Ball:
         self.window_size        = window_size
         self.ball_edges         = calculate.edge_values(self.center_absolute, self.radius_absolute)
         self.walls_hit          = calculate.walls_hit(self.ball_edges, self.window_size)        
-        self.hit_counter = 0
+        self.hit_counter        = 0
 
     def move(self):
         self.center_absolute = calculate.new_position(self.center_absolute, self.velocity_absolute)
