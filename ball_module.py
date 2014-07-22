@@ -16,23 +16,6 @@ class Ball:
         self.walls_hit          = calculate.walls_hit(self.ball_edges, self.window_size)        
         self.hit_counter        = 0
 
-    def move(self):
-        self.center_absolute = calculate.new_position(self.center_absolute, self.velocity_absolute)
-        self.ball_edges = calculate.edge_values(self.center_absolute, self.radius_absolute)
-        self.walls_hit = calculate.walls_hit(self.ball_edges, self.window_size)
-        self.velocity_absolute = calculate.velocity_after_wall_collision(self.velocity_absolute, self.walls_hit)
-        self._change_color_if_collision()
-        return (self.center_absolute, self.radius_absolute)
-
-    def _change_color_if_collision(self):
-        if self.walls_hit == '':  # if no walls hit this frame..
-            self.hit_counter = self.hit_counter - 1 if self.hit_counter > 0 else 0  # ..decrement if necessary
-            if self.hit_counter == 0:  # if counter is at 0..
-                self.color = self.start_color  # ..set ball color to starting color
-        else: # if walls were hit this frame..
-            self.color = colors.YELLOW  # ..set ball color to yellow
-            self.hit_counter = 5  # ..and reset counter
-
 
 class BallCreator:
     def __init__(self, options):
@@ -100,6 +83,22 @@ class Coordinate:
     def absolute(self, absolute_size):
         W, H = absolute_size
         return (int(self._relative_x * W), int(self._relative_y * H))
+
+
+def move_all_balls(balls):
+    for ball in balls:
+        ball.center_absolute    = calculate.new_position(ball.center_absolute, ball.velocity_absolute)
+        ball.ball_edges         = calculate.edge_values(ball.center_absolute, ball.radius_absolute)
+        ball.walls_hit          = calculate.walls_hit(ball.ball_edges, ball.window_size)
+        ball.velocity_absolute  = calculate.velocity_after_wall_collision(ball.velocity_absolute, ball.walls_hit)
+    return balls
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':

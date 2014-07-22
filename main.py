@@ -36,11 +36,11 @@ class Main:
 
     def redraw_screen(self):
         self.screen.fill(BLACK)
+        self.balls = ball_module.move_all_balls(self.balls)
         for ball in self.balls:
-            center_pos_px, radius_px = ball.move()
-            pygame.draw.circle(self.screen, ball.color, center_pos_px, radius_px)
+            pygame.draw.circle(self.screen, ball.color, ball.center_absolute, ball.radius_absolute)
             text = self.font.render(str(ball.number), True, BLACK)
-            self.screen.blit(text, center_pos_px)
+            self.screen.blit(text, ball.center_absolute)
         pygame.display.update()
         pygame.time.delay(50)
 
