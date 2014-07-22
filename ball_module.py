@@ -5,19 +5,16 @@ import random
 
 class Ball:
     def __init__(self, number, color, center, radius, velocity, window_size):
-        self.window_size    = window_size
-        self.number         = number
-        self.start_color    = color
+        self.number             = number
+        self.color              = color
+        self.start_color        = color
+        self.center_absolute    = Coordinate(center).absolute(window_size)
         self.radius_absolute    = Coordinate((radius,radius)).absolute(window_size)[0]
         self.velocity_absolute  = Coordinate(velocity).absolute(window_size)
-        self.center_absolute    = Coordinate(center).absolute(window_size)
-        self.__init__changing_vars()
-
-    def __init__changing_vars(self):
-        self.color = self.start_color
-        self.ball_edges = calculate.edge_values(self.center_absolute, self.radius_absolute)
-        self.walls_hit = calculate.walls_hit(self.ball_edges, self.window_size)        
-        self.counter = 0
+        self.window_size        = window_size
+        self.ball_edges         = calculate.edge_values(self.center_absolute, self.radius_absolute)
+        self.walls_hit          = calculate.walls_hit(self.ball_edges, self.window_size)        
+        self.hit_counter = 0
 
     def move(self):
         self.center_absolute = calculate.new_position(self.center_absolute, self.velocity_absolute)
@@ -28,13 +25,14 @@ class Ball:
         return (self.center_absolute, self.radius_absolute)
 
     def _change_color_if_collision(self):
-        if self.walls_hit == '':  # if no walls hit THIS frame..
-            self.counter = self.counter - 1 if self.counter > 0 else 0  # ..decrement if necessary
-            if self.counter == 0:  # if counter is at 0..
+        if self.walls_hit == '':  # if no walls hit this frame..
+            self.hit_counter = self.hit_counter - 1 if self.hit_counter > 0 else 0  # ..decrement if necessary
+            if self.hit_counter == 0:  # if counter is at 0..
                 self.color = self.start_color  # ..set ball color to starting color
         else: # if walls were hit this frame..
             self.color = colors.YELLOW  # ..set ball color to yellow
-            self.counter = 5  # ..and reset counter
+            self.hit_counter = 5  # ..and reset counter
+
 
 class BallCreator:
     def __init__(self, options):
@@ -102,3 +100,8 @@ class Coordinate:
     def absolute(self, absolute_size):
         W, H = absolute_size
         return (int(self._relative_x * W), int(self._relative_y * H))
+
+
+if __name__ == '__main__':
+    import main
+    main.Main()
