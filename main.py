@@ -43,8 +43,12 @@ class Main:
             self.balls = ball_module.move_balls(self.balls)
             for ball in self.balls:
                 pygame.draw.circle(self.screen, ball.color, ball.position, ball.radius)
-                text = self.font.render(str(ball.number), True, BLACK)
-                self.screen.blit(text, ball.position)
+                fontstr = str(ball.number)
+                fontw, fonth = self.font.size(fontstr)
+                ballx, bally = ball.position
+                fontx, fonty = (ballx - fontw//2), (bally - fonth//2)
+                text = self.font.render(fontstr, True, BLACK)
+                self.screen.blit(text, (fontx,fonty))
             pygame.display.update()
             pygame.time.delay(50)
 
