@@ -2,11 +2,15 @@ import generic_functions as gfs
 gfs.change_sys_path()
 import ball_module
 from colors import *
+import os
 import sys
 import pygame
 
+
 class Main:
     def __init__(self):
+        if os.environ['COMPUTERNAME'] == 'BRIAN-LAPTOP':
+            os.environ['SDL_VIDEO_WINDOW_POS'] = "1050, 150"  # positions window
         pygame.init()
         self.options = options
         self.screen  = self.setup_screen()
@@ -15,7 +19,7 @@ class Main:
         self.START_GAME_LOOP()
 
     def setup_font(self):
-        return pygame.font.SysFont(None, 24)
+        return pygame.font.SysFont(None, 14)
 
     def setup_screen(self):
         display = pygame.display
@@ -46,11 +50,11 @@ class Main:
 
 
 options = gfs.mk_namedtuple('Options', dict(
-    total_number_balls  = 5,                # integer
-    center_xy_range     = (0.010,   0.99),  # proportion of window
-    radius_range        = (0.025,   0.075), # proportion of window
-    velocity_range      = (0.005,   0.010), # proportion of window
-    window_size         = (600,     600)))  # pixels
+    total_number_balls  = 10,                   # integer
+    center_xy_range     = (0.010,   0.99 ),     # proportion of window
+    radius_range        = (0.025,   0.075),     # proportion of window
+    velocity_range      = (0.005,   0.010),     # proportion of window
+    window_size         = (300,     300  )))    # pixels
 
 
 if __name__ == '__main__':
