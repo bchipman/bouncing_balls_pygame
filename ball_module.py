@@ -33,7 +33,8 @@ class BallCreator:
             while True:
                 ball = self._create_random_ball(n)
                 if self._new_ball_not_in_wall(ball):
-                    break
+                    if self._new_ball_not_in_other_ball(ball, balls):
+                        break
             balls.append(ball)
         return balls
 
@@ -50,10 +51,16 @@ class BallCreator:
         return Ball(number=N, color=C, center=(X, Y), radius=R, velocity=(V, V), window_size=self.window_size)
 
     def _new_ball_not_in_wall(self, ball):
-        ball_edges = calculate.edge_values(ball.position, ball.radius)
-        walls_hit = calculate.walls_hit(ball_edges, ball.window_size)
+        edges = calculate.edge_values(ball.position, ball.radius)
+        walls_hit = calculate.walls_hit(edges, ball.window_size)
         if walls_hit == '': return True
         else:               return False
+    
+    def _new_ball_not_in_other_ball(self, new_ball, balls_so_far):
+        for old_ball in balls_so_far:
+            if calculate.ball_collision(old_ball.position, old_ball.radius, new_ball.position, new_ball.radius):
+                return False
+        return True
 
     @staticmethod
     def RND(range_or_choices):
