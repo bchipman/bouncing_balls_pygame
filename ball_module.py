@@ -13,8 +13,8 @@ class Ball:
         self.radius             = Coordinate((radius,radius)).absolute(window_size)[0]
         self.velocity           = Coordinate(velocity).absolute(window_size)
         self.window_size        = window_size
-        self.ball_edges         = calculate.edge_values(self.position, self.radius)
-        self.walls_hit          = calculate.walls_hit(self.ball_edges, self.window_size)        
+        self.edges              = calculate.edge_values(self.position, self.radius)
+        self.walls_hit          = calculate.walls_hit(self.edges, self.window_size)        
         self.hit_counter        = 0
 
 
