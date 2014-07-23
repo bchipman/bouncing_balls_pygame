@@ -8,11 +8,11 @@ class Ball:
         self.number             = number
         self.color              = color
         self.start_color        = color
-        self.center_absolute    = Coordinate(center).absolute(window_size)
-        self.radius_absolute    = Coordinate((radius,radius)).absolute(window_size)[0]
-        self.velocity_absolute  = Coordinate(velocity).absolute(window_size)
+        self.position           = Coordinate(center).absolute(window_size)
+        self.radius             = Coordinate((radius,radius)).absolute(window_size)[0]
+        self.velocity           = Coordinate(velocity).absolute(window_size)
         self.window_size        = window_size
-        self.ball_edges         = calculate.edge_values(self.center_absolute, self.radius_absolute)
+        self.ball_edges         = calculate.edge_values(self.position, self.radius)
         self.walls_hit          = calculate.walls_hit(self.ball_edges, self.window_size)        
         self.hit_counter        = 0
 
@@ -49,7 +49,7 @@ class BallCreator:
         return Ball(number=N, color=C, center=(X, Y), radius=R, velocity=(V, V), window_size=self.window_size)
 
     def _new_ball_not_in_wall(self, ball):
-        ball_edges = calculate.edge_values(ball.center_absolute, ball.radius_absolute)
+        ball_edges = calculate.edge_values(ball.position, ball.radius)
         walls_hit = calculate.walls_hit(ball_edges, ball.window_size)
         if walls_hit == '': return True
         else:               return False
@@ -87,10 +87,10 @@ class Coordinate:
 
 def move_all_balls(balls):
     for ball in balls:
-        ball.center_absolute    = calculate.new_position(ball.center_absolute, ball.velocity_absolute)
-        ball.ball_edges         = calculate.edge_values(ball.center_absolute, ball.radius_absolute)
-        ball.walls_hit          = calculate.walls_hit(ball.ball_edges, ball.window_size)
-        ball.velocity_absolute  = calculate.velocity_after_wall_collision(ball.velocity_absolute, ball.walls_hit)
+        ball.position   = calculate.new_position(ball.position, ball.velocity)
+        ball.ball_edges = calculate.edge_values(ball.position, ball.radius)
+        ball.walls_hit  = calculate.walls_hit(ball.ball_edges, ball.window_size)
+        ball.velocity   = calculate.velocity_after_wall_collision(ball.velocity, ball.walls_hit)
     return balls
 
 

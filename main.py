@@ -9,44 +9,48 @@ import pygame
 
 class Main:
     def __init__(self):
-        if os.environ['COMPUTERNAME'] == 'BRIAN-LAPTOP':
-            os.environ['SDL_VIDEO_WINDOW_POS'] = "1050, 150"  # positions window
-        pygame.init()
+        def _setup_pygame():
+            if os.environ['COMPUTERNAME'] == 'BRIAN-LAPTOP':
+                os.environ['SDL_VIDEO_WINDOW_POS'] = "1050, 150"  # positions window
+            pygame.init()
+
+        def _setup_font():
+            return pygame.font.SysFont(None, 14)
+
+        def _setup_screen():
+            display = pygame.display
+            screen  = display.set_mode(self.options.window_size)
+            display.set_caption('Bouncing Balls!')
+            return screen
+        
+        _setup_pygame()
         self.options = options
-        self.screen  = self.setup_screen()
-        self.font    = self.setup_font()
+        self.font    = _setup_font()
+        self.screen  = _setup_screen()
         self.balls   = ball_module.BallCreator(self.options).balls
         self.START_GAME_LOOP()
 
-    def setup_font(self):
-        return pygame.font.SysFont(None, 14)
-
-    def setup_screen(self):
-        display = pygame.display
-        screen  = display.set_mode(self.options.window_size)
-        display.set_caption('Bouncing Balls!')
-        return screen
-
     def START_GAME_LOOP(self):
+
+        def _check_for_pygame_quit_event():
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+        def _redraw_screen():
+            self.screen.fill(BLACK)
+            self.balls = ball_module.move_all_balls(self.balls)
+            for ball in self.balls:
+                pygame.draw.circle(self.screen, ball.color, ball.position, ball.radius)
+                text = self.font.render(str(ball.number), True, BLACK)
+                self.screen.blit(text, ball.position)
+            pygame.display.update()
+            pygame.time.delay(50)
+
         while True:
-            self.check_for_pygame_quit_event()
-            self.redraw_screen()
-
-    def check_for_pygame_quit_event(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-    def redraw_screen(self):
-        self.screen.fill(BLACK)
-        self.balls = ball_module.move_all_balls(self.balls)
-        for ball in self.balls:
-            pygame.draw.circle(self.screen, ball.color, ball.center_absolute, ball.radius_absolute)
-            text = self.font.render(str(ball.number), True, BLACK)
-            self.screen.blit(text, ball.center_absolute)
-        pygame.display.update()
-        pygame.time.delay(50)
+            _check_for_pygame_quit_event()
+            _redraw_screen()
 
 
 options = gfs.mk_namedtuple('Options', dict(
