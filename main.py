@@ -40,7 +40,7 @@ class Main:
 
         def _redraw_screen():
             self.screen.fill(BLACK)
-            self.balls = ball_module.move_all_balls(self.balls)
+            self.balls = ball_module.move_balls(self.balls)
             for ball in self.balls:
                 pygame.draw.circle(self.screen, ball.color, ball.position, ball.radius)
                 text = self.font.render(str(ball.number), True, BLACK)

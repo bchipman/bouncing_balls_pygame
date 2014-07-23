@@ -10,6 +10,8 @@ BLUE 	= (0, 		0, 	 	255)
 
 YELLOW 	= (255,		255, 	0)
 PURPLE 	= (255,		0, 		255)
+ORANGE 	= (255,		153, 	0)
 
 
-colors = [WHITE, GREEN, PURPLE, RED]
+# ball_colors = [GREEN, BLUE, PURPLE]
+ball_colors = [GREEN]

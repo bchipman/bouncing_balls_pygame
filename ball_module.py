@@ -1,6 +1,7 @@
 import calculate
 import colors
 import random
+import itertools
 
 
 class Ball:
@@ -40,7 +41,7 @@ class BallCreator:
         xy, XY = self.center_xy_range
         r, R = self.radius_range
         v, V = self.velocity_range
-        C = BallCreator.RND(colors.colors)
+        C = BallCreator.RND(colors.ball_colors)
         X = BallCreator.RND(self.center_xy_range)
         Y = BallCreator.RND(self.center_xy_range)
         R = BallCreator.RND(self.radius_range)
@@ -85,12 +86,36 @@ class Coordinate:
         return (int(self._relative_x * W), int(self._relative_y * H))
 
 
-def move_all_balls(balls):
-    for ball in balls:
-        ball.position   = calculate.new_position(ball.position, ball.velocity)
-        ball.ball_edges = calculate.edge_values(ball.position, ball.radius)
-        ball.walls_hit  = calculate.walls_hit(ball.ball_edges, ball.window_size)
-        ball.velocity   = calculate.velocity_after_wall_collision(ball.velocity, ball.walls_hit)
+def move_balls(balls):
+
+    def _move_balls():
+        for ball in balls:
+            ball.position   = calculate.new_position(ball.position, ball.velocity)
+            ball.edges      = calculate.edge_values(ball.position, ball.radius)
+            ball.walls_hit  = calculate.walls_hit(ball.edges, ball.window_size)
+            ball.velocity   = calculate.velocity_after_wall_collision(ball.velocity, ball.walls_hit)
+
+    def _check_for_overlaps():
+        combos = itertools.combinations(balls, 2)
+        ball_collisions = [(a.number,b.number) for (a,b) in combos if calculate.ball_collision(a.position, a.radius, b.position, b.radius)]
+        balls_hit_other_ball = set([item for inner_iterable in ball_collisions for item in inner_iterable])
+        balls_hit_wall = set([ball.number for ball in balls if ball.walls_hit != ''])
+
+        for ball in balls:
+            
+            if ball.number in balls_hit_wall:
+                ball.color = colors.YELLOW
+                if ball.number in balls_hit_other_ball:
+                    ball.color = colors.RED
+                
+            elif ball.number in balls_hit_other_ball:
+                ball.color = colors.ORANGE
+            
+            else:
+                ball.color = ball.start_color
+
+    _move_balls()
+    _check_for_overlaps()
     return balls
 
 

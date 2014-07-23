@@ -31,3 +31,11 @@ def new_position(position, velocity):
     dx, dy = velocity
     return (x+dx, y+dy)
 
+def ball_collision(Axy, Ar, Bxy, Br):
+    Ax, Ay = Axy
+    Bx, By = Bxy
+    radius_sum_sqd  = (Ar + Br) ** 2
+    distance_sqd    = (Ax - Bx) ** 2 + (Ay - By) ** 2
+    if distance_sqd < radius_sum_sqd:   return True
+    else:                               return False
+    
