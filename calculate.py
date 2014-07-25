@@ -39,3 +39,8 @@ def ball_collision(Axy, Ar, Bxy, Br):
     if distance_sqd < radius_sum_sqd:   return True
     else:                               return False
     
+def ball_text_position(text, font, ball_position):
+    fontw, fonth = font.size(text)
+    ballx, bally = ball_position
+    fontx, fonty = (ballx - fontw//2), (bally - fonth//2)
+    return fontx, fonty

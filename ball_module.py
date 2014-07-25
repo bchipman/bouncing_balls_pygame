@@ -14,8 +14,7 @@ class Ball:
         self.velocity           = Coordinate(velocity).absolute(window_size)
         self.window_size        = window_size
         self.edges              = calculate.edge_values(self.position, self.radius)
-        self.walls_hit          = calculate.walls_hit(self.edges, self.window_size)        
-        self.hit_counter        = 0
+        self.walls_hit          = calculate.walls_hit(self.edges, self.window_size)
 
 
 class BallCreator:
@@ -93,7 +92,7 @@ class Coordinate:
         return (int(self._relative_x * W), int(self._relative_y * H))
 
 
-def move_balls(balls):
+def move_balls(balls, font):
 
     def _move_balls():
         for ball in balls:
@@ -107,22 +106,28 @@ def move_balls(balls):
         ball_collisions = [(a.number,b.number) for (a,b) in combos if calculate.ball_collision(a.position, a.radius, b.position, b.radius)]
         balls_hit_other_ball = set([item for inner_iterable in ball_collisions for item in inner_iterable])
         balls_hit_wall = set([ball.number for ball in balls if ball.walls_hit != ''])
-
         for ball in balls:
-            
+            ball.color = ball.start_color
             if ball.number in balls_hit_wall:
                 ball.color = colors.YELLOW
                 if ball.number in balls_hit_other_ball:
                     ball.color = colors.RED
-                
             elif ball.number in balls_hit_other_ball:
                 ball.color = colors.ORANGE
-            
-            else:
-                ball.color = ball.start_color
+
+        print('  '.join([str(i) for i in ball_collisions]))
+
+    def _get_ball_text_position():
+        for ball in balls:
+            text = str(ball.number)
+            ball.text_position = calculate.ball_text_position(text, font, ball.position)
+            ball.text_rendered = font.render(text, True, colors.BLACK)
+
+
 
     _move_balls()
     _check_for_overlaps()
+    _get_ball_text_position()
     return balls
 
 

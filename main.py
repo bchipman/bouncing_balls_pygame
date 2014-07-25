@@ -13,8 +13,8 @@ options = gfs.mk_namedtuple('Options', dict(
     radius_range        = (0.025,   0.075),     # proportion of window
     velocity_range      = (0.005,   0.010),     # proportion of window
     window_size         = (  300,   300  ),     # pixels
-    window_pos_desktop  = (-1000,   150  ),     # pixels
-    window_pos_laptop   = ( 1050,   150  ),     # pixels
+    window_pos_desktop  = (2200,    150  ),     # pixels
+    window_pos_laptop   = (1050,    150  ),     # pixels
     ))    
 
 
@@ -53,15 +53,11 @@ class Main:
 
         def _redraw_screen():
             self.screen.fill(BLACK)
-            self.balls = ball_module.move_balls(self.balls)
+            self.balls = ball_module.move_balls(self.balls, self.font)
             for ball in self.balls:
                 pygame.draw.circle(self.screen, ball.color, ball.position, ball.radius)
-                fontstr = str(ball.number)
-                fontw, fonth = self.font.size(fontstr)
-                ballx, bally = ball.position
-                fontx, fonty = (ballx - fontw//2), (bally - fonth//2)
-                text = self.font.render(fontstr, True, BLACK)
-                self.screen.blit(text, (fontx,fonty))
+                self.screen.blit(ball.text_rendered, ball.text_position)
+
             pygame.display.update()
             pygame.time.delay(50)
 
