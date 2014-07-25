@@ -53,7 +53,7 @@ class Main:
 
         def _redraw_screen():
             self.screen.fill(BLACK)
-            self.balls = ball_module.move_balls(self.balls, self.font)
+            self.balls = ball_module.ActionHandler(self.balls, self.font)()
             for ball in self.balls:
                 pygame.draw.circle(self.screen, ball.color, ball.position, ball.radius)
                 self.screen.blit(ball.text_rendered, ball.text_position)

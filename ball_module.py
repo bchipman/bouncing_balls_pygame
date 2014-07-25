@@ -81,50 +81,47 @@ class Coordinate:
         return (int(self._relative_x * W), int(self._relative_y * H))
 
 
-def move_balls(balls, font):
+class ActionHandler:
+    def __init__(self, balls, font):
+        self.balls = balls
+        self.font = font
 
-    def _move_balls():
-        for ball in balls:
+    def __call__(self):
+        self._move_balls()
+        self._check_for_overlaps()
+        self._get_ball_text_position()
+        self._print_collisions()
+        return self.balls
+        
+    def _move_balls(self):
+        for ball in self.balls:
             ball.position   = calculate.new_position(ball.position, ball.velocity)
             ball.edges      = calculate.edge_values(ball.position, ball.radius)
             ball.walls_hit  = calculate.walls_hit(ball.edges, ball.window_size)
             ball.velocity   = calculate.velocity_after_wall_collision(ball.velocity, ball.walls_hit)
 
-    def _check_for_overlaps():
-        combos = itertools.combinations(balls, 2)
-        ball_collisions = [(a.number,b.number) for (a,b) in combos if calculate.ball_collision(a.position, a.radius, b.position, b.radius)]
-        balls_hit_other_ball = set([item for inner_iterable in ball_collisions for item in inner_iterable])
-        balls_hit_wall = set([ball.number for ball in balls if ball.walls_hit != ''])
-        for ball in balls:
+    def _check_for_overlaps(self):
+        combos = itertools.combinations(self.balls, 2)
+        self.ball_collisions = [(a.number,b.number) for (a,b) in combos if calculate.ball_collision(a.position, a.radius, b.position, b.radius)]
+        self.balls_hit_other_ball = set([item for inner_iterable in self.ball_collisions for item in inner_iterable])
+        self.balls_hit_wall = set([ball.number for ball in self.balls if ball.walls_hit != ''])
+        for ball in self.balls:
             ball.color = ball.start_color
-            if ball.number in balls_hit_wall:
+            if ball.number in self.balls_hit_wall:
                 ball.color = colors.YELLOW
-                if ball.number in balls_hit_other_ball:
+                if ball.number in self.balls_hit_other_ball:
                     ball.color = colors.RED
-            elif ball.number in balls_hit_other_ball:
+            elif ball.number in self.balls_hit_other_ball:
                 ball.color = colors.ORANGE
 
-        print('    '.join([str(i)[1:-1].replace(', ', '~') for i in ball_collisions]))
-
-    def _get_ball_text_position():
-        for ball in balls:
+    def _get_ball_text_position(self):
+        for ball in self.balls:
             text = str(ball.number)
-            ball.text_position = calculate.ball_text_position(text, font, ball.position)
-            ball.text_rendered = font.render(text, True, colors.BLACK)
+            ball.text_position = calculate.ball_text_position(text, self.font, ball.position)
+            ball.text_rendered = self.font.render(text, True, colors.BLACK)
 
-
-
-    _move_balls()
-    _check_for_overlaps()
-    _get_ball_text_position()
-    return balls
-
-
-
-
-
-
-
+    def _print_collisions(self):
+        print('    '.join([str(i)[1:-1].replace(', ', '~') for i in self.ball_collisions]))
 
 
 if __name__ == '__main__':
