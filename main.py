@@ -1,3 +1,4 @@
+#!python3
 import generic_functions as gfs
 gfs.change_sys_path()
 import ball_module
@@ -13,8 +14,8 @@ options = gfs.mk_namedtuple('Options', dict(
     radius_range        = (0.025,   0.075),     # proportion of window
     velocity_range      = (0.005,   0.010),     # proportion of window
     window_size         = (  300,   300  ),     # pixels
-    window_pos_desktop  = (2200,    150  ),     # pixels
-    window_pos_laptop   = (1050,    150  ),     # pixels
+    window_pos_desktop  = ( 2200,   150  ),     # pixels
+    window_pos_laptop   = ( 1050,   150  ),     # pixels
     ))    
 
 

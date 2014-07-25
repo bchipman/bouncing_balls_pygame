@@ -1,3 +1,4 @@
+#!python3
 import calculate
 import colors
 import itertools
@@ -89,7 +90,9 @@ class ActionHandler:
     def __call__(self):
         self._move_balls()
         self._check_for_overlaps()
+        self._change_colors_when_hit()
         self._get_ball_text_position()
+        self._get_new_velocities()
         self._print_collisions()
         return self.balls
         
@@ -105,6 +108,8 @@ class ActionHandler:
         self.ball_collisions = [(a.number,b.number) for (a,b) in combos if calculate.ball_collision(a.position, a.radius, b.position, b.radius)]
         self.balls_hit_other_ball = set([item for inner_iterable in self.ball_collisions for item in inner_iterable])
         self.balls_hit_wall = set([ball.number for ball in self.balls if ball.walls_hit != ''])
+    
+    def _change_colors_when_hit(self):
         for ball in self.balls:
             ball.color = ball.start_color
             if ball.number in self.balls_hit_wall:
@@ -120,8 +125,14 @@ class ActionHandler:
             ball.text_position = calculate.ball_text_position(text, self.font, ball.position)
             ball.text_rendered = self.font.render(text, True, colors.BLACK)
 
+    def _get_new_velocities(self):
+        for i, j in self.ball_collisions:
+            new_vels = calculate.velocity_after_ball_collision(self.balls[i], self.balls[j])
+            self.balls[i].velocity, self.balls[j].velocity = new_vels 
+
+
     def _print_collisions(self):
-        print('    '.join([str(i)[1:-1].replace(', ', '~') for i in self.ball_collisions]))
+        print('. '+'  '.join([str(i)[1:-1].replace(', ', '~') for i in self.ball_collisions]))
 
 
 if __name__ == '__main__':
