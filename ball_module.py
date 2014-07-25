@@ -1,7 +1,7 @@
 import calculate
 import colors
-import random
 import itertools
+import generic_functions
 
 
 class Ball:
@@ -41,12 +41,12 @@ class BallCreator:
         xy, XY = self.center_xy_range
         r, R = self.radius_range
         v, V = self.velocity_range
-        C = BallCreator.RND(colors.ball_colors)
-        X = BallCreator.RND(self.center_xy_range)
-        Y = BallCreator.RND(self.center_xy_range)
-        R = BallCreator.RND(self.radius_range)
-        V = BallCreator.RND(self.velocity_range)
-        V = BallCreator.RND([-V, V])
+        C = generic_functions.rnd(colors.ball_colors)
+        X = generic_functions.rnd(self.center_xy_range)
+        Y = generic_functions.rnd(self.center_xy_range)
+        R = generic_functions.rnd(self.radius_range)
+        V = generic_functions.rnd(self.velocity_range)
+        V = generic_functions.rnd([-V, V])
         return Ball(number=N, color=C, center=(X, Y), radius=R, velocity=(V, V), window_size=self.window_size)
 
     def _new_ball_not_in_wall(self, ball):
@@ -60,17 +60,6 @@ class BallCreator:
             if calculate.ball_collision(old_ball.position, old_ball.radius, new_ball.position, new_ball.radius):
                 return False
         return True
-
-    @staticmethod
-    def RND(range_or_choices):
-        if type(range_or_choices) is tuple:
-            a, b = range_or_choices
-            if type(a) == type(b) == int:
-                return random.randint(a, b)
-            elif type(a) == type(b) == float:
-                return random.uniform(a, b)
-        elif type(range_or_choices) is list:
-            return random.choice(range_or_choices)
 
 
 class Coordinate:
