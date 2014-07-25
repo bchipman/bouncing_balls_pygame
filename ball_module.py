@@ -115,7 +115,7 @@ def move_balls(balls, font):
             elif ball.number in balls_hit_other_ball:
                 ball.color = colors.ORANGE
 
-        print('  '.join([str(i) for i in ball_collisions]))
+        print('    '.join([str(i)[1:-1].replace(', ', '~') for i in ball_collisions]))
 
     def _get_ball_text_position():
         for ball in balls:
