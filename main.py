@@ -47,12 +47,18 @@ class Main:
 
     def START_GAME_LOOP(self):
 
-        def _check_for_pygame_events():
-            for event in pygame.event.get():
+        def _get_events():
+            self.curr_events = pygame.event.get()
+        
+        def _check_for_quit_event():
+            for event in self.curr_events:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                elif event.type == pygame.KEYDOWN:
+                
+        def _check_for_key_press_events():
+            for event in self.curr_events:
+                if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_f:
                         self.f_key_pressed = True
                 elif event.type == pygame.KEYUP:
@@ -70,7 +76,9 @@ class Main:
             pygame.time.delay(50)
 
         while True:
-            _check_for_pygame_events()
+            _get_events()
+            _check_for_quit_event()
+            _check_for_key_press_events()
             _redraw_screen()
 
 
