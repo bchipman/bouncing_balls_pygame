@@ -92,7 +92,7 @@ class ActionHandler:
         self._check_for_overlaps()
         self._change_colors_when_hit()
         self._get_ball_text_position()
-        self._get_new_velocities()
+        # self._get_new_velocities()
         self._print_collisions()
         return self.balls
         

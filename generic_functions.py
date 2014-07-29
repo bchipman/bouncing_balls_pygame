@@ -8,10 +8,11 @@ def mk_namedtuple(name, di):
 
 def print_sys_path():
     for p in sys.path:
-        print(repr(p), type(p))
+        print(repr(p))
 
 def change_sys_path():
-	sys.path = sys.path[::-1]  # a simple list reversal seems to fix the import warning
+    # sys.path = sys.path[::-1]  # a simple list reversal seems to fix the import warning
+    sys.path = sorted(sys.path) # simple list sorting also seems to be effective at removing the import warning
 
 def rnd(range_or_choices):
     if type(range_or_choices) is tuple:
@@ -24,6 +25,6 @@ def rnd(range_or_choices):
         return random.choice(range_or_choices)     
 
 if __name__ == '__main__':
+    change_sys_pathf()
     print_sys_path()
-    print(len(sys.path))
     import pygame

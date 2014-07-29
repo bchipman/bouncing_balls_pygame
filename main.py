@@ -20,11 +20,11 @@ options = gfs.mk_namedtuple('Options', dict(
 
 
 class Main:
+
     def __init__(self):
         def _setup_window():
             if os.environ['COMPUTERNAME'] == 'BRIAN-DESKTOP':
                 os.environ['SDL_VIDEO_WINDOW_POS'] = '{},{}'.format(options.window_pos_desktop[0], options.window_pos_desktop[1])  # positions window
-
             elif os.environ['COMPUTERNAME'] == 'BRIAN-LAPTOP':
                 os.environ['SDL_VIDEO_WINDOW_POS'] = '{},{}'.format(options.window_pos_laptop[0], options.window_pos_laptop[1])  # positions window
             pygame.init()
@@ -42,28 +42,35 @@ class Main:
         self.screen  = _setup_screen()
         self.font    = _setup_font()
         self.balls   = ball_module.BallCreator(options).balls
+        self.f_key_pressed = False
         self.START_GAME_LOOP()
 
     def START_GAME_LOOP(self):
 
-        def _check_for_pygame_quit_event():
+        def _check_for_pygame_events():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_f:
+                        self.f_key_pressed = True
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_f:
+                        self.f_key_pressed = False
 
         def _redraw_screen():
-            self.screen.fill(BLACK)
+            if       self.f_key_pressed:    self.screen.fill(RED)
+            elif not self.f_key_pressed:    self.screen.fill(BLACK)
             self.balls = ball_module.ActionHandler(self.balls, self.font)()
             for ball in self.balls:
                 pygame.draw.circle(self.screen, ball.color, ball.position, ball.radius)
                 self.screen.blit(ball.text_rendered, ball.text_position)
-
             pygame.display.update()
             pygame.time.delay(50)
 
         while True:
-            _check_for_pygame_quit_event()
+            _check_for_pygame_events()
             _redraw_screen()
 
 
