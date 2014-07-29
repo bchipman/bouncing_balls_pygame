@@ -6,6 +6,7 @@ from colors import *
 import os
 import sys
 import pygame
+from pygame.locals import *
 
 
 options = gfs.mk_namedtuple('Options', dict(
@@ -42,7 +43,6 @@ class Main:
         self.screen  = _setup_screen()
         self.font    = _setup_font()
         self.balls   = ball_module.BallCreator(options).balls
-        self.f_key_pressed = False
         self.START_GAME_LOOP()
 
     def START_GAME_LOOP(self):
@@ -52,34 +52,49 @@ class Main:
         
         def _check_for_quit_event():
             for event in self.curr_events:
-                if event.type == pygame.QUIT:
+                if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
                 
         def _check_for_key_press_events():
             for event in self.curr_events:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_f:
-                        self.f_key_pressed = True
-                elif event.type == pygame.KEYUP:
-                    if event.key == pygame.K_f:
-                        self.f_key_pressed = False
+                if event.type == KEYDOWN:
+                    if event.key == K_f:    
+                        self.flash = True
+                
+                elif event.type == KEYUP:
+                    if event.key == K_f:    
+                        self.flash = False
+                    if event.key == K_p:
+                        if self.pause: 
+                            self.pause = False
+                        elif not self.pause: 
+                            self.pause = True
+
+        def _advance_balls():
+            self.balls = ball_module.ActionHandler(self.balls, self.font)()
 
         def _redraw_screen():
-            if       self.f_key_pressed:    self.screen.fill(RED)
-            elif not self.f_key_pressed:    self.screen.fill(BLACK)
-            self.balls = ball_module.ActionHandler(self.balls, self.font)()
+            if self.flash:
+                self.screen.fill(RED)
+            elif not self.flash:
+                self.screen.fill(BLACK)
             for ball in self.balls:
                 pygame.draw.circle(self.screen, ball.color, ball.position, ball.radius)
                 self.screen.blit(ball.text_rendered, ball.text_position)
             pygame.display.update()
             pygame.time.delay(50)
 
+
+        self.flash = False
+        self.pause = False
         while True:
             _get_events()
             _check_for_quit_event()
             _check_for_key_press_events()
-            _redraw_screen()
+            if not self.pause:
+                _advance_balls()
+                _redraw_screen()
 
 
 if __name__ == '__main__':
