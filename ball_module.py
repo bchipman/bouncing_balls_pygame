@@ -82,7 +82,7 @@ class Coordinate:
         return (int(self._relative_x * W), int(self._relative_y * H))
 
 
-class ActionHandler:
+class BallHandler:
     def __init__(self, balls, font):
         self.balls = balls
         self.font = font
@@ -137,4 +137,4 @@ class ActionHandler:
 
 if __name__ == '__main__':
     import main
-    main.Main()
+    main.Main()()
