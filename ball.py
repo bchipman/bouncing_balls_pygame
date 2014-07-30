@@ -17,6 +17,9 @@ class Ball:
         self.edges              = calculate.edge_values(self.position, self.radius)
         self.walls_hit          = calculate.walls_hit(self.edges, self.window_size)
 
+    def __repr__(self):
+        return 'Ball N:{}, XY:{}, R:{}'.format(self.number, self.position, self.radius)
+
 
 class BallCreator:
     def __init__(self, options):
@@ -93,7 +96,7 @@ class BallHandler:
         self._change_colors_when_hit()
         self._get_ball_text_position()
         # self._get_new_velocities()
-        self._print_collisions()
+        # self._print_collisions()
         return self.balls
         
     def _move_balls(self):
@@ -123,7 +126,7 @@ class BallHandler:
         for ball in self.balls:
             text = str(ball.number)
             ball.text_position = calculate.ball_text_position(text, self.font, ball.position)
-            ball.text_rendered = self.font.render(text, True, colors.BLACK)
+            # ball.text_rendered = self.font.render(text, True, colors.BLACK)
 
     def _get_new_velocities(self):
         for i, j in self.ball_collisions:

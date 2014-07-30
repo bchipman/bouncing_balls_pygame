@@ -6,6 +6,7 @@ import sys
 import pygame
 from colors import *
 from pygame.locals import *
+import copy
 #-------------------------------------------------------------------------------
 options = gfs.mk_namedtuple('Options', dict(
     total_number_balls  = 10,                   # integer
@@ -31,23 +32,23 @@ class Main:
             pygame.key.set_repeat(500, 100)
 
         def _setup_screen():
-            display = pygame.display
-            screen  = display.set_mode(options.window_size)
-            display.set_caption('Bouncing Balls!')
-            return screen
+            pygame.display.set_mode(options.window_size)
+            pygame.display.set_caption('Bouncing Balls!')
+            return pygame.display.get_surface()
 
         def _setup_font():
             return pygame.font.SysFont(None, 24)
 
         _setup_window()
         _setup_mouse_keyboard()
-        self.flash         = False
-        self.pause         = False
-        self.adv_one_frame = False
-        self.frame_number  = 0
-        self.screen        = _setup_screen()
-        self.font          = _setup_font()
-        self.balls         = ball.BallCreator(options).balls
+        self.flash          = False
+        self.pause          = False
+        self.adv_one_frame  = False
+        self.frame_number   = 0
+        self.surface        = _setup_screen()
+        self.font           = _setup_font()
+        self.balls          = ball.BallCreator(options).balls
+        self.frame_history  = [list(self.balls)]
     #-------------------------------------------------------------------------------
     def handle_events(self):
         def _check_for_quit_event():
@@ -58,44 +59,51 @@ class Main:
 
         def _check_for_key_press_events():
             for event in self.curr_events:
+                
                 if event.type == KEYDOWN:
-                    if event.key == K_f:    
-                        self.flash = True
-                    if event.key == K_RIGHT:
-                        self.adv_one_frame = True
+                    if event.key == K_f:        self.flash = True
+                    if event.key == K_RIGHT:    self.adv_one_frame = True
+                
                 elif event.type == KEYUP:
-                    if event.key == K_f:    
-                        self.flash = False
+                    if event.key == K_f:        self.flash = False
                     if event.key == K_p:
-                        if self.pause: 
-                            self.pause = False
-                        elif not self.pause: 
-                            self.pause = True
+                        if       self.pause:    self.pause = False
+                        elif not self.pause:    self.pause = True
+                    if event.key == K_b:
+                        if self.frame_number >= 10:
+                            self.frame_number = 10
+                            self.balls = copy.deepcopy(self.frame_history[self.frame_number])
         
         self.curr_events = pygame.event.get()
         self.mouse_position = pygame.mouse.get_pos()
         _check_for_quit_event()
         _check_for_key_press_events()
     #-------------------------------------------------------------------------------
+    def move_balls(self):
+        self.balls = ball.BallHandler(self.balls, self.font)()
+        self.frame_number += 1
+        self.frame_history.append(copy.deepcopy(self.balls))
+    #-------------------------------------------------------------------------------
     def draw_screen(self):
         def _draw_screen():
             if self.flash:
-                self.screen.fill(RED)
+                self.surface.fill(RED)
             elif not self.flash:
-                self.screen.fill(BLACK)
+                self.surface.fill(BLACK)
         
         def _draw_balls():
             for ball in self.balls:
-                pygame.draw.circle(self.screen, ball.color, ball.position, ball.radius)
-                self.screen.blit(ball.text_rendered, ball.text_position)
-            pygame.draw.circle(self.screen, RED, self.mouse_position, 3)
+                pygame.draw.circle(self.surface, ball.color, ball.position, ball.radius)
+                text = str(ball.number)
+                text_rendered = self.font.render(text, True, BLACK)
+                self.surface.blit(text_rendered, ball.text_position)
 
         def _draw_mouse():
-            pygame.draw.circle(self.screen, RED, self.mouse_position, 3)
+            pygame.draw.circle(self.surface, RED, self.mouse_position, 3)
 
         def _draw_frame_number():
             txt_rendered = self.font.render(str(self.frame_number), True, WHITE)
-            self.screen.blit(txt_rendered, (0,0))
+            self.surface.blit(txt_rendered, (0,0))
 
         def _update_screen():
             pygame.display.update()
@@ -107,12 +115,9 @@ class Main:
         _draw_frame_number()
         _update_screen()
     #-------------------------------------------------------------------------------
-    def move_balls(self):
-        self.balls = ball.BallHandler(self.balls, self.font)()
-        self.frame_number += 1
-    #-------------------------------------------------------------------------------
     def __call__(self):
         while True:
+            print(self.frame_number)
             self.handle_events()
             if self.pause and self.adv_one_frame:
                 self.move_balls()
