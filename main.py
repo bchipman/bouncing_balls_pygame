@@ -48,7 +48,7 @@ class Main:
         self.surface        = _setup_screen()
         self.font           = _setup_font()
         self.balls          = ball.BallCreator(options).balls
-        self.frame_history  = [list(self.balls)]
+        self.frame_history  = {0:copy.deepcopy(self.balls)}
     #-------------------------------------------------------------------------------
     def handle_events(self):
         def _check_for_quit_event():
@@ -61,8 +61,11 @@ class Main:
             for event in self.curr_events:
                 
                 if event.type == KEYDOWN:
+                    # multiple KEYDOWN events set to occur when key is held down
                     if event.key == K_f:        self.flash = True
                     if event.key == K_RIGHT:    self.adv_one_frame = True
+                    if event.key == K_LEFT:     pass
+
                 
                 elif event.type == KEYUP:
                     if event.key == K_f:        self.flash = False
@@ -82,7 +85,7 @@ class Main:
     def move_balls(self):
         self.balls = ball.BallHandler(self.balls, self.font)()
         self.frame_number += 1
-        self.frame_history.append(copy.deepcopy(self.balls))
+        self.frame_history[self.frame_number] = copy.deepcopy(self.balls)
     #-------------------------------------------------------------------------------
     def draw_screen(self):
         def _draw_screen():
@@ -94,8 +97,7 @@ class Main:
         def _draw_balls():
             for ball in self.balls:
                 pygame.draw.circle(self.surface, ball.color, ball.position, ball.radius)
-                text = str(ball.number)
-                text_rendered = self.font.render(text, True, BLACK)
+                text_rendered = self.font.render(str(ball.number), True, BLACK)
                 self.surface.blit(text_rendered, ball.text_position)
 
         def _draw_mouse():
@@ -117,7 +119,6 @@ class Main:
     #-------------------------------------------------------------------------------
     def __call__(self):
         while True:
-            print(self.frame_number)
             self.handle_events()
             if self.pause and self.adv_one_frame:
                 self.move_balls()

@@ -126,7 +126,6 @@ class BallHandler:
         for ball in self.balls:
             text = str(ball.number)
             ball.text_position = calculate.ball_text_position(text, self.font, ball.position)
-            # ball.text_rendered = self.font.render(text, True, colors.BLACK)
 
     def _get_new_velocities(self):
         for i, j in self.ball_collisions:
