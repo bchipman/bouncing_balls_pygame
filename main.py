@@ -1,6 +1,6 @@
 #!python3
 import generic_functions as gfs  # first because of syspath change
-import ball_module
+import ball
 import os
 import sys
 import pygame
@@ -44,9 +44,10 @@ class Main:
         self.flash         = False
         self.pause         = False
         self.adv_one_frame = False
+        self.frame_number  = 0
         self.screen        = _setup_screen()
         self.font          = _setup_font()
-        self.balls         = ball_module.BallCreator(options).balls
+        self.balls         = ball.BallCreator(options).balls
     #-------------------------------------------------------------------------------
     def handle_events(self):
         def _check_for_quit_event():
@@ -92,6 +93,10 @@ class Main:
         def _draw_mouse():
             pygame.draw.circle(self.screen, RED, self.mouse_position, 3)
 
+        def _draw_frame_number():
+            txt_rendered = self.font.render(str(self.frame_number), True, WHITE)
+            self.screen.blit(txt_rendered, (0,0))
+
         def _update_screen():
             pygame.display.update()
             pygame.time.delay(50)
@@ -99,10 +104,12 @@ class Main:
         _draw_screen()
         _draw_balls()
         _draw_mouse()
+        _draw_frame_number()
         _update_screen()
     #-------------------------------------------------------------------------------
     def move_balls(self):
-        self.balls = ball_module.BallHandler(self.balls, self.font)()
+        self.balls = ball.BallHandler(self.balls, self.font)()
+        self.frame_number += 1
     #-------------------------------------------------------------------------------
     def __call__(self):
         while True:
