@@ -1,5 +1,5 @@
 #!python3
-import globals
+import globals  # first because of syspath change
 import ball
 import copy
 import os
@@ -59,9 +59,7 @@ class Main:
                 
                 elif event.type == KEYUP:
                     if event.key == K_f:        self.flash = False
-                    if event.key == K_p:
-                        if       self.pause:    self.pause = False
-                        elif not self.pause:    self.pause = True
+                    if event.key == K_SPACE:    self.pause = not self.pause
                     if event.key == K_b:
                         if self.frame_number >= 10:
                             self.frame_number = 10
