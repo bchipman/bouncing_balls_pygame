@@ -36,6 +36,7 @@ class Main:
         self.adv_one_frame  = False
         self.rev_one_frame  = False
         self.frame_number   = 0
+        self.max_frame      = 0
         self.surface        = _setup_screen()
         self.font           = _setup_font()
         self.balls          = ball.BallCreator().balls
@@ -74,6 +75,7 @@ class Main:
     def handle_frames(self):
         def _move_balls():
             self.frame_number += self.frame_dir
+            self.max_frame = max(self.max_frame, self.frame_number)
             if self.frame_number < 0:   self.frame_number = 0
 
             if self.frame_number in self.frame_history.keys():  # frame already occurred 
