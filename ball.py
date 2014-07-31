@@ -2,7 +2,7 @@
 import calculate
 import colors
 import itertools
-import generic_functions
+import globals
 
 
 class Ball:
@@ -22,12 +22,12 @@ class Ball:
 
 
 class BallCreator:
-    def __init__(self, options):
-        self.number_balls       = options.total_number_balls
-        self.center_xy_range    = options.center_xy_range
-        self.radius_range       = options.radius_range
-        self.velocity_range     = options.velocity_range
-        self.window_size        = options.window_size
+    def __init__(self):
+        self.number_balls       = globals.options.total_number_balls
+        self.center_xy_range    = globals.options.center_xy_range
+        self.radius_range       = globals.options.radius_range
+        self.velocity_range     = globals.options.velocity_range
+        self.window_size        = globals.options.window_size
         self.balls              = self._setup_balls()
 
     def _setup_balls(self):
@@ -45,12 +45,12 @@ class BallCreator:
         xy, XY = self.center_xy_range
         r, R = self.radius_range
         v, V = self.velocity_range
-        C = generic_functions.rnd(colors.ball_colors)
-        X = generic_functions.rnd(self.center_xy_range)
-        Y = generic_functions.rnd(self.center_xy_range)
-        R = generic_functions.rnd(self.radius_range)
-        V = generic_functions.rnd(self.velocity_range)
-        V = generic_functions.rnd([-V, V])
+        C = globals.rnd(colors.ball_colors)
+        X = globals.rnd(self.center_xy_range)
+        Y = globals.rnd(self.center_xy_range)
+        R = globals.rnd(self.radius_range)
+        V = globals.rnd(self.velocity_range)
+        V = globals.rnd([-V, V])
         return Ball(number=N, color=C, center=(X, Y), radius=R, velocity=(V, V), window_size=self.window_size)
 
     def _new_ball_not_in_wall(self, ball):
