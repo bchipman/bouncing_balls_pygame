@@ -44,15 +44,9 @@ class Main:
         self.frame_dir      = 1
     #-------------------------------------------------------------------------------
     def handle_events(self):
-        def _check_for_quit_event():
-            for event in self.curr_events:
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
-
         def _check_for_key_press_events():
-            for event in self.curr_events:
-                
+            for event in pygame.event.get([KEYDOWN, KEYUP]):
+            
                 if event.type == KEYDOWN:
                     # multiple KEYDOWN events set to occur when key is held down
                     if event.key == K_f:        self.flash = True
@@ -60,6 +54,9 @@ class Main:
                     if event.key == K_LEFT:     self.rev_one_frame = True
                 
                 elif event.type == KEYUP:
+                    if event.key == K_q:
+                        pygame.event.post(pygame.event.Event(QUIT))
+
                     if event.key == K_f:        self.flash = False
                     if event.key == K_SPACE:    self.pause = not self.pause
                     if event.key == K_b:
@@ -67,10 +64,16 @@ class Main:
                             self.frame_number = 10
                             self.balls = copy.deepcopy(self.frame_history[self.frame_number])
         
-        self.curr_events = pygame.event.get()
+        def _check_for_quit_event():
+            for event in pygame.event.get(QUIT):
+                if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+        
         self.mouse_position = pygame.mouse.get_pos()
-        _check_for_quit_event()
         _check_for_key_press_events()
+        _check_for_quit_event()
+        pygame.event.clear()
     #-------------------------------------------------------------------------------
     def handle_frames(self):
         def _move_balls():
