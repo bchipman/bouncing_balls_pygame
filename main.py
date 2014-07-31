@@ -34,11 +34,13 @@ class Main:
         self.flash          = False
         self.pause          = False
         self.adv_one_frame  = False
+        self.rev_one_frame  = False
         self.frame_number   = 0
         self.surface        = _setup_screen()
         self.font           = _setup_font()
         self.balls          = ball.BallCreator().balls
         self.frame_history  = {0:copy.deepcopy(self.balls)}
+        self.frame_dir      = 1
     #-------------------------------------------------------------------------------
     def handle_events(self):
         def _check_for_quit_event():
@@ -54,8 +56,7 @@ class Main:
                     # multiple KEYDOWN events set to occur when key is held down
                     if event.key == K_f:        self.flash = True
                     if event.key == K_RIGHT:    self.adv_one_frame = True
-                    if event.key == K_LEFT:     pass
-
+                    if event.key == K_LEFT:     self.rev_one_frame = True
                 
                 elif event.type == KEYUP:
                     if event.key == K_f:        self.flash = False
@@ -70,10 +71,30 @@ class Main:
         _check_for_quit_event()
         _check_for_key_press_events()
     #-------------------------------------------------------------------------------
-    def move_balls(self):
-        self.balls = ball.BallHandler(self.balls, self.font)()
-        self.frame_number += 1
-        self.frame_history[self.frame_number] = copy.deepcopy(self.balls)
+    def handle_frames(self):
+        def _move_balls():
+            self.frame_number += self.frame_dir
+            if self.frame_number < 0:   self.frame_number = 0
+
+            if self.frame_number in self.frame_history.keys():  # frame already occurred 
+                self.balls = copy.deepcopy(self.frame_history[self.frame_number]) 
+
+            elif self.frame_number not in self.frame_history.keys():  # frame hasn't happened yet 
+                self.balls = ball.BallHandler(self.balls, self.font)()
+            self.frame_history[self.frame_number] = copy.deepcopy(self.balls)  # add data to frame history
+
+        if self.pause:
+            self.frame_dir = 0
+            if self.adv_one_frame:
+                self.adv_one_frame = False
+                self.frame_dir = 1
+            elif self.rev_one_frame:
+                self.rev_one_frame = False
+                self.frame_dir = -1
+        elif not self.pause:
+            self.frame_dir = 1
+        
+        _move_balls()        
     #-------------------------------------------------------------------------------
     def draw_screen(self):
         def _draw_screen():
@@ -108,16 +129,8 @@ class Main:
     def __call__(self):
         while True:
             self.handle_events()
-            if self.pause and self.adv_one_frame:
-                self.move_balls()
-                self.draw_screen()
-                self.pause = True
-                self.adv_one_frame = False
-            elif self.pause and not self.adv_one_frame:
-                self.draw_screen()
-            elif not self.pause:
-                self.move_balls()
-                self.draw_screen()
+            self.handle_frames()
+            self.draw_screen()
     #-------------------------------------------------------------------------------
 if __name__ == '__main__':
     Main()()

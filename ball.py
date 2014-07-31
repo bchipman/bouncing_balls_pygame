@@ -16,6 +16,7 @@ class Ball:
         self.window_size        = window_size
         self.edges              = calculate.edge_values(self.position, self.radius)
         self.walls_hit          = calculate.walls_hit(self.edges, self.window_size)
+        self.text_position      = calculate.ball_text_position(str(self.number), globals.font(), self.position)
 
     def __repr__(self):
         return 'Ball N:{}, XY:{}, R:{}'.format(self.number, self.position, self.radius)
