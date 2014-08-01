@@ -1,12 +1,13 @@
-#!python3
-import globals  # first because of syspath change
-import ball
 import copy
 import os
 import sys
+
+import globals  # must be before pygame else python warning
+import ball
 import pygame
-from colors import *
-from pygame.locals import *
+
+from colors         import *
+from pygame.locals  import *
 #-------------------------------------------------------------------------------
 class Main:
     def __init__(self):
@@ -22,7 +23,7 @@ class Main:
             pygame.key.set_repeat(500, 100)
 
         def _setup_screen():
-            pygame.display.set_mode(globals.options.window_size)
+            pygame.display.set_mode(globals.options.initial_window_size)
             pygame.display.set_caption('Bouncing Balls!')
             return pygame.display.get_surface()
 
@@ -59,10 +60,9 @@ class Main:
 
                     if event.key == K_f:        self.flash = False
                     if event.key == K_SPACE:    self.pause = not self.pause
-                    if event.key == K_b:
-                        if self.frame_number >= 10:
-                            self.frame_number = 10
-                            self.balls = copy.deepcopy(self.frame_history[self.frame_number])
+                    if event.key == K_r:
+                        self.frame_number = 0
+                        self.balls = copy.deepcopy(self.frame_history[self.frame_number])
         
         def _check_for_quit_event():
             for event in pygame.event.get(QUIT):

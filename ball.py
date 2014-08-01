@@ -1,4 +1,3 @@
-#!python3
 import calculate
 import colors
 import itertools
@@ -6,16 +5,16 @@ import globals
 
 
 class Ball:
-    def __init__(self, number, color, center, radius, velocity, window_size):
+    def __init__(self, number, color, center, radius, velocity):
+        w_size                  = globals.window_size()
         self.number             = number
         self.color              = color
         self.start_color        = color
-        self.position           = Coordinate(center).absolute(window_size)
-        self.radius             = Coordinate((radius,radius)).absolute(window_size)[0]
-        self.velocity           = Coordinate(velocity).absolute(window_size)
-        self.window_size        = window_size
+        self.position           = Coordinate(center).absolute(w_size)
+        self.radius             = Coordinate((radius,radius)).absolute(w_size)[0]
+        self.velocity           = Coordinate(velocity).absolute(w_size)
         self.edges              = calculate.edge_values(self.position, self.radius)
-        self.walls_hit          = calculate.walls_hit(self.edges, self.window_size)
+        self.walls_hit          = calculate.walls_hit(self.edges, w_size)
         self.text_position      = calculate.ball_text_position(str(self.number), globals.font(), self.position)
 
     def __repr__(self):
@@ -28,7 +27,6 @@ class BallCreator:
         self.center_xy_range    = globals.options.center_xy_range
         self.radius_range       = globals.options.radius_range
         self.velocity_range     = globals.options.velocity_range
-        self.window_size        = globals.options.window_size
         self.balls              = self._setup_balls()
 
     def _setup_balls(self):
@@ -52,11 +50,11 @@ class BallCreator:
         R = globals.rnd(self.radius_range)
         V = globals.rnd(self.velocity_range)
         V = globals.rnd([-V, V])
-        return Ball(number=N, color=C, center=(X, Y), radius=R, velocity=(V, V), window_size=self.window_size)
+        return Ball(number=N, color=C, center=(X, Y), radius=R, velocity=(V, V))
 
     def _new_ball_not_in_wall(self, ball):
         edges = calculate.edge_values(ball.position, ball.radius)
-        walls_hit = calculate.walls_hit(edges, ball.window_size)
+        walls_hit = calculate.walls_hit(edges, globals.window_size())
         if walls_hit == '': return True
         else:               return False
     
@@ -65,25 +63,6 @@ class BallCreator:
             if calculate.ball_collision(old_ball.position, old_ball.radius, new_ball.position, new_ball.radius):
                 return False
         return True
-
-
-class Coordinate:
-    def __init__(self, xy, total_size=None):
-        x, y = xy
-        if type(x) == type(y) == int:       # Given in pixels (absolute)
-            W, H = total_size
-            self._relative_x = x / W
-            self._relative_y = y / H
-        elif type(x) == type(y) == float:   # Given in proportions (relative)
-            self._relative_x = x
-            self._relative_y = y
-
-    def relative(self):
-        return (self._relative_x, self._relative_y)
-
-    def absolute(self, absolute_size):
-        W, H = absolute_size
-        return (int(self._relative_x * W), int(self._relative_y * H))
 
 
 class BallHandler:
@@ -104,7 +83,7 @@ class BallHandler:
         for ball in self.balls:
             ball.position   = calculate.new_position(ball.position, ball.velocity)
             ball.edges      = calculate.edge_values(ball.position, ball.radius)
-            ball.walls_hit  = calculate.walls_hit(ball.edges, ball.window_size)
+            ball.walls_hit  = calculate.walls_hit(ball.edges, globals.window_size())
             ball.velocity   = calculate.velocity_after_wall_collision(ball.velocity, ball.walls_hit)
 
     def _check_for_overlaps(self):
@@ -136,6 +115,25 @@ class BallHandler:
 
     def _print_collisions(self):
         print('. '+'  '.join([str(i)[1:-1].replace(', ', '~') for i in self.ball_collisions]))
+
+
+class Coordinate:
+    def __init__(self, xy, total_size=None):
+        x, y = xy
+        if type(x) == type(y) == int:       # Given in pixels (absolute)
+            W, H = total_size
+            self._relative_x = x / W
+            self._relative_y = y / H
+        elif type(x) == type(y) == float:   # Given in proportions (relative)
+            self._relative_x = x
+            self._relative_y = y
+
+    def relative(self):
+        return (self._relative_x, self._relative_y)
+
+    def absolute(self, absolute_size):
+        W, H = absolute_size
+        return (int(self._relative_x * W), int(self._relative_y * H))
 
 
 if __name__ == '__main__':

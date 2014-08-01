@@ -31,7 +31,7 @@ options = mk_namedtuple('Options', dict(
     center_xy_range     = (0.010,   0.99 ),     # proportion of window
     radius_range        = (0.025,   0.075),     # proportion of window
     velocity_range      = (0.005,   0.010),     # proportion of window
-    window_size         = (  300,   300  ),     # pixels
+    initial_window_size = (  300,   300  ),     # pixels
     window_pos_desktop  = ( 2200,   150  ),     # pixels
     window_pos_laptop   = ( 1050,   150  ),     # pixels
     font_size           = 24,
@@ -39,6 +39,9 @@ options = mk_namedtuple('Options', dict(
 
 def font():
     return pygame.font.SysFont(None, options.font_size)
+
+def window_size():
+    return pygame.display.get_surface().get_size()
 
 #-----------------------------------__MAIN__------------------------------------
 if __name__ != '__main__':
