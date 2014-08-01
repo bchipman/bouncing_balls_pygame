@@ -66,9 +66,8 @@ class BallCreator:
 
 
 class BallHandler:
-    def __init__(self, balls, font):
+    def __init__(self, balls):
         self.balls = balls
-        self.font = font
 
     def __call__(self):
         self._move_balls()
@@ -105,7 +104,7 @@ class BallHandler:
     def _get_ball_text_position(self):
         for ball in self.balls:
             text = str(ball.number)
-            ball.text_position = calculate.ball_text_position(text, self.font, ball.position)
+            ball.text_position = calculate.ball_text_position(text, globals.font(), ball.position)
 
     def _get_new_velocities(self):
         for i, j in self.ball_collisions:

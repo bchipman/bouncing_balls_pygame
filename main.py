@@ -81,11 +81,11 @@ class Main:
             self.max_frame = max(self.max_frame, self.frame_number)
             if self.frame_number < 0:   self.frame_number = 0
 
-            if self.frame_number in self.frame_history.keys():  # frame already occurred 
+            if self.frame_number in self.frame_history:  # frame already occurred 
                 self.balls = copy.deepcopy(self.frame_history[self.frame_number]) 
 
-            elif self.frame_number not in self.frame_history.keys():  # frame hasn't happened yet 
-                self.balls = ball.BallHandler(self.balls, self.font)()
+            elif self.frame_number not in self.frame_history:  # frame hasn't happened yet 
+                self.balls = ball.BallHandler(self.balls)()
             self.frame_history[self.frame_number] = copy.deepcopy(self.balls)  # add data to frame history
 
         if self.pause:

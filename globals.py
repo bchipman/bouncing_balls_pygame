@@ -18,12 +18,9 @@ def change_sys_path():
 def rnd(range_or_choices):
     if type(range_or_choices) is tuple:
         a, b = range_or_choices
-        if type(a) == type(b) == int:
-            return random.randint(a, b)
-        elif type(a) == type(b) == float:
-            return random.uniform(a, b)
-    elif type(range_or_choices) is list:
-        return random.choice(range_or_choices)     
+        if   type(a) is type(b) is int:     return random.randint(a,b)
+        elif type(a) is type(b) is float:   return random.uniform(a,b)
+    elif type(range_or_choices) is list:    return random.choice(range_or_choices)
 
 #-------------------------------GLOBAL_VARIABLES--------------------------------
 options = mk_namedtuple('Options', dict(
