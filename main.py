@@ -36,7 +36,7 @@ class Main:
         self.pause          = False
         self.adv_one_frame  = False
         self.rev_one_frame  = False
-        self.frame_number   = 0
+        globals.frame_number   = 0
         self.max_frame      = 0
         self.surface        = _setup_screen()
         self.font           = _setup_font()
@@ -61,8 +61,8 @@ class Main:
                     if event.key == K_f:        self.flash = False
                     if event.key == K_SPACE:    self.pause = not self.pause
                     if event.key == K_r:
-                        self.frame_number = 0
-                        self.balls = copy.deepcopy(self.frame_history[self.frame_number])
+                        globals.frame_number = 0
+                        self.balls = copy.deepcopy(self.frame_history[globals.frame_number])
         
         def _check_for_quit_event():
             for event in pygame.event.get(QUIT):
@@ -77,16 +77,16 @@ class Main:
     #-------------------------------------------------------------------------------
     def handle_frames(self):
         def _move_balls():
-            self.frame_number += self.frame_dir
-            self.max_frame = max(self.max_frame, self.frame_number)
-            if self.frame_number < 0:   self.frame_number = 0
+            globals.frame_number += self.frame_dir
+            self.max_frame = max(self.max_frame, globals.frame_number)
+            if globals.frame_number < 0:   globals.frame_number = 0
 
-            if self.frame_number in self.frame_history:  # frame already occurred 
-                self.balls = copy.deepcopy(self.frame_history[self.frame_number]) 
+            if globals.frame_number in self.frame_history:  # frame already occurred 
+                self.balls = copy.deepcopy(self.frame_history[globals.frame_number]) 
 
-            elif self.frame_number not in self.frame_history:  # frame hasn't happened yet 
+            elif globals.frame_number not in self.frame_history:  # frame hasn't happened yet 
                 self.balls = ball.BallHandler(self.balls)()
-            self.frame_history[self.frame_number] = copy.deepcopy(self.balls)  # add data to frame history
+            self.frame_history[globals.frame_number] = copy.deepcopy(self.balls)  # add data to frame history
 
         if self.pause:
             self.frame_dir = 0
@@ -118,7 +118,7 @@ class Main:
             pygame.draw.circle(self.surface, RED, self.mouse_position, 3)
 
         def _draw_frame_number():
-            txt_rendered = self.font.render(str(self.frame_number), True, WHITE)
+            txt_rendered = self.font.render(str(globals.frame_number), True, WHITE)
             self.surface.blit(txt_rendered, (0,0))
 
         def _update_screen():

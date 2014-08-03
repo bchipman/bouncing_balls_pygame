@@ -75,7 +75,7 @@ class BallHandler:
         self._change_colors_when_hit()
         self._get_ball_text_position()
         # self._get_new_velocities()
-        # self._print_collisions()
+        self._print_collisions()
         return self.balls
         
     def _move_balls(self):
@@ -111,9 +111,8 @@ class BallHandler:
             new_vels = calculate.velocity_after_ball_collision(self.balls[i], self.balls[j])
             self.balls[i].velocity, self.balls[j].velocity = new_vels 
 
-
     def _print_collisions(self):
-        print('. '+'  '.join([str(i)[1:-1].replace(', ', '~') for i in self.ball_collisions]))
+        print('{:<5}'.format(globals.frame_number)+'  '.join([str(i)[1:-1].replace(', ', '~') for i in self.ball_collisions]))
 
 
 class Coordinate:
