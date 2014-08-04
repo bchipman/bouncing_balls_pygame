@@ -32,17 +32,17 @@ class Main:
 
         _setup_window()
         _setup_mouse_keyboard()
-        self.flash          = False
-        self.pause          = False
-        self.adv_one_frame  = False
-        self.rev_one_frame  = False
-        globals.frame_number   = 0
-        self.max_frame      = 0
-        self.surface        = _setup_screen()
-        self.font           = _setup_font()
-        self.balls          = ball.BallCreator().balls
-        self.frame_history  = {0:copy.deepcopy(self.balls)}
-        self.frame_dir      = 1
+        self.flash              = False
+        self.pause              = False
+        self.adv_one_frame      = False
+        self.rev_one_frame      = False
+        globals.frame_number    = 0
+        self.max_frame          = 0
+        self.surface            = _setup_screen()
+        self.font               = _setup_font()
+        self.balls              = ball.BallCreator().balls
+        self.frame_history      = {0:copy.deepcopy(self.balls)}
+        self.frame_dir          = 1
     #-------------------------------------------------------------------------------
     def handle_events(self):
         def _check_for_key_press_events():
