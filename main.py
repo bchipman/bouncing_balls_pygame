@@ -23,7 +23,7 @@ class Main:
             pygame.key.set_repeat(500, 100)
 
         def _setup_screen():
-            pygame.display.set_mode(globals.options.initial_window_size)
+            pygame.display.set_mode(globals.options.initial_window_size, RESIZABLE)
             pygame.display.set_caption('Bouncing Balls!')
             return pygame.display.get_surface()
 
@@ -63,7 +63,13 @@ class Main:
                     if event.key == K_r:
                         globals.frame_number = 0
                         self.balls = copy.deepcopy(self.frame_history[globals.frame_number])
-        
+
+        def _check_for_resize_events():
+            for event in pygame.event.get(VIDEORESIZE):
+                new_size = event.size
+                new_size_forced_square = (min(new_size), min(new_size))
+                pygame.display.set_mode(new_size_forced_square, RESIZABLE)
+
         def _check_for_quit_event():
             for event in pygame.event.get(QUIT):
                 if event.type == QUIT:
@@ -72,6 +78,7 @@ class Main:
         
         self.mouse_position = pygame.mouse.get_pos()
         _check_for_key_press_events()
+        _check_for_resize_events()
         _check_for_quit_event()
         pygame.event.clear()
     #-------------------------------------------------------------------------------
@@ -110,9 +117,10 @@ class Main:
         
         def _draw_balls():
             for ball in self.balls:
-                pygame.draw.circle(self.surface, ball.color, ball.position, ball.radius)
+                # pygame.draw.circle(self.surface ball.color, ball.position, ball.radius)
+                pygame.draw.circle(self.surface, ball.color, ball.position.abs, ball.radius.abs[0])
                 text_rendered = self.font.render(str(ball.number), True, BLACK)
-                self.surface.blit(text_rendered, ball.text_position)
+                self.surface.blit(text_rendered, ball.text_position.abs)
 
         def _draw_mouse():
             pygame.draw.circle(self.surface, RED, self.mouse_position, 3)

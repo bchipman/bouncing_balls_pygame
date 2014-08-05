@@ -1,4 +1,5 @@
 import math
+from coordinate import Coordinate
 
 def edge_values(position, radius):
     x, y = position
@@ -10,14 +11,13 @@ def edge_values(position, radius):
     R = x + r
     return (U, D, L, R)
 
-def walls_hit(ball_edges, window_size):
+def walls_hit(ball_edges):
     Up, Dn, L, R    = ball_edges
-    max_w, max_h    = window_size
     walls_hit       = ''
-    if Up < 0:          walls_hit += 'N'
-    if Dn > max_h:      walls_hit += 'S'
-    if L  < 0:          walls_hit += 'W'
-    if R  > max_w:      walls_hit += 'E'
+    if Up < 0:      walls_hit += 'N'
+    if Dn > 1:      walls_hit += 'S'
+    if L  < 0:      walls_hit += 'W'
+    if R  > 1:      walls_hit += 'E'
     return walls_hit
 
 def velocity_after_wall_collision(velocity, walls_hit):
@@ -34,6 +34,11 @@ def new_position(position, velocity):
     return (x+dx, y+dy)
 
 def ball_collision(Axy, Ar, Bxy, Br):
+    if type(Ar) is tuple:   Ar, Ar = Ar
+    else:                   Ar     = Ar
+    if type(Br) is tuple:   Br, Br = Br
+    else:                   Br     = Br
+
     Ax, Ay = Axy
     Bx, By = Bxy
     radius_sum_sqd  = (Ar + Br) ** 2
@@ -41,8 +46,9 @@ def ball_collision(Axy, Ar, Bxy, Br):
     if distance_sqd < radius_sum_sqd:   return True
     else:                               return False
     
-def ball_text_position(text, font, ball_position):
-    fontw, fonth = font.size(text)
+def ball_text_position(text, font, ball_position, window_size):
+    fontsize = Coordinate(font.size(text), window_size)
+    fontw, fonth = fontsize.abs
     ballx, bally = ball_position
     fontx, fonty = (ballx - fontw//2), (bally - fonth//2)
     return fontx, fonty
