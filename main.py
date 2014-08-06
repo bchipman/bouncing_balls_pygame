@@ -37,7 +37,6 @@ class Main:
         self.adv_one_frame      = False
         self.rev_one_frame      = False
         globals.frame_number    = 0
-        self.max_frame          = 0
         self.surface            = _setup_screen()
         self.font               = _setup_font()
         self.balls              = ball.BallCreator().balls
@@ -45,7 +44,7 @@ class Main:
         self.frame_dir          = 1
     #-------------------------------------------------------------------------------
     def handle_events(self):
-        def _check_for_key_press_events():
+        def _handle_key_press_events():
             for event in pygame.event.get([KEYDOWN, KEYUP]):
             
                 if event.type == KEYDOWN:
@@ -63,50 +62,57 @@ class Main:
                     if event.key == K_r:
                         globals.frame_number = 0
                         self.balls = copy.deepcopy(self.frame_history[globals.frame_number])
+        
+        def _handle_pause():
+            if self.pause:
+                self.frame_dir = 0
+                if self.adv_one_frame:
+                    self.adv_one_frame = False
+                    self.frame_dir = 1
+                elif self.rev_one_frame:
+                    self.rev_one_frame = False
+                    self.frame_dir = -1
+            elif not self.pause:
+                self.frame_dir = 1
 
-        def _check_for_resize_events():
+        def _handle_resize_event():
             for event in pygame.event.get(VIDEORESIZE):
                 new_size = event.size
                 new_size_forced_square = (min(new_size), min(new_size))
                 pygame.display.set_mode(new_size_forced_square, RESIZABLE)
 
-        def _check_for_quit_event():
+        def _handle_quit_event():
             for event in pygame.event.get(QUIT):
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
         
         self.mouse_position = pygame.mouse.get_pos()
-        _check_for_key_press_events()
-        _check_for_resize_events()
-        _check_for_quit_event()
+        _handle_key_press_events()
+        _handle_pause()
+        _handle_resize_event()
+        _handle_quit_event()
         pygame.event.clear()
     #-------------------------------------------------------------------------------
     def handle_frames(self):
-        def _move_balls():
+
+        def _change_frame_number():
             globals.frame_number += self.frame_dir
-            self.max_frame = max(self.max_frame, globals.frame_number)
             if globals.frame_number < 0:   globals.frame_number = 0
 
+        def _retrieve_or_generate_ball_data():
             if globals.frame_number in self.frame_history:  # frame already occurred 
                 self.balls = copy.deepcopy(self.frame_history[globals.frame_number]) 
-
             elif globals.frame_number not in self.frame_history:  # frame hasn't happened yet 
                 self.balls = ball.BallHandler(self.balls)()
-            self.frame_history[globals.frame_number] = copy.deepcopy(self.balls)  # add data to frame history
-
-        if self.pause:
-            self.frame_dir = 0
-            if self.adv_one_frame:
-                self.adv_one_frame = False
-                self.frame_dir = 1
-            elif self.rev_one_frame:
-                self.rev_one_frame = False
-                self.frame_dir = -1
-        elif not self.pause:
-            self.frame_dir = 1
         
-        _move_balls()        
+        def _save_new_ball_data():
+            if globals.frame_number not in self.frame_history:  # frame hasn't happened yet
+                self.frame_history[globals.frame_number] = copy.deepcopy(self.balls)  # add data to frame history
+        
+        _change_frame_number()
+        _retrieve_or_generate_ball_data()
+        _save_new_ball_data()
     #-------------------------------------------------------------------------------
     def draw_screen(self):
         def _draw_screen():
@@ -117,7 +123,6 @@ class Main:
         
         def _draw_balls():
             for ball in self.balls:
-                # pygame.draw.circle(self.surface ball.color, ball.position, ball.radius)
                 pygame.draw.circle(self.surface, ball.color, ball.position.abs, ball.radius.abs[0])
                 text_rendered = self.font.render(str(ball.number), True, BLACK)
                 self.surface.blit(text_rendered, ball.text_position.abs)
