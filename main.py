@@ -12,9 +12,9 @@ from pygame.locals  import *
 class Main:
     def __init__(self):
         def _setup_window():
-            start_pos = globals.options.window_pos_desktop
+            start_pos = globals.Options.window_pos_desktop
             if os.environ['COMPUTERNAME'] == 'BRIAN-LAPTOP':
-                start_pos = globals.options.window_pos_laptop
+                start_pos = globals.Options.window_pos_laptop
             os.environ['SDL_VIDEO_WINDOW_POS'] = '{},{}'.format(start_pos[0], start_pos[1])  # positions window
             pygame.init()
         
@@ -23,7 +23,7 @@ class Main:
             pygame.key.set_repeat(500, 100)
 
         def _setup_screen():
-            pygame.display.set_mode(globals.options.initial_window_size, RESIZABLE)
+            pygame.display.set_mode(globals.Options.initial_window_size, RESIZABLE)
             pygame.display.set_caption('Bouncing Balls!')
             return pygame.display.get_surface()
 

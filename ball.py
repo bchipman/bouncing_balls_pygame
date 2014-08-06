@@ -25,10 +25,10 @@ class Ball:
 
 class BallCreator:
     def __init__(self):
-        self.number_balls       = globals.options.total_number_balls
-        self.center_xy_range    = globals.options.center_xy_range
-        self.radius_range       = globals.options.radius_range
-        self.velocity_range     = globals.options.velocity_range
+        self.number_balls       = globals.Options.total_number_balls
+        self.center_xy_range    = globals.Options.center_xy_range
+        self.radius_range       = globals.Options.radius_range
+        self.velocity_range     = globals.Options.velocity_range
         self.balls              = self._setup_balls()
 
     def _setup_balls(self):
